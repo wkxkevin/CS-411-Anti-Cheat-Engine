@@ -231,6 +231,7 @@ int main(int argc, char* argv[]) {
         }
     }
 
+    cout << "[LOG] Num " << student_dir_list.size() << endl;
     //Everything is sorted so students' netIDs match
     sort(net_id_list.begin(), net_id_list.end(), [](string a, string b) {
         return a < b;
@@ -241,7 +242,7 @@ int main(int argc, char* argv[]) {
 
     //Range through each question, and perform tasks accordingly
     for(size_t ques_idx = 0; ques_idx < questions.size(); ques_idx++) {
-        
+
         //Get list of directories(rewrite if schemas change)
     	vector<char*> curr_question_responses;
     	for(auto student : student_dir_list) {
@@ -255,6 +256,10 @@ int main(int argc, char* argv[]) {
                 }
                 // Name of question goes across a '/' character but between 2nd and 3rd '_' character of full directory
                 string q = curr_path.substr(second + 1, third - second - 1);
+                if(!flag) {
+                    cout << "[LOG] Path: " << curr_path << endl;
+                    cout << "[LOG] Question: " << q << endl;
+                }
                 if(questions[ques_idx] == q) {
                     size_t size = 0;
                     ifstream file(curr_path, std::ios::binary | std::ios::ate);
