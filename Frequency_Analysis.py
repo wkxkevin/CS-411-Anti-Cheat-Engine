@@ -20,8 +20,6 @@ for fname in files:
     pairlines1 = ""
     pairlines2 = ""
     pairlines3 = ""
-    freqlines1 = ""
-    freqlines2 = ""
 
     with open(fname) as f:
         lines = [line.strip() for line in f if line.strip()]
@@ -36,10 +34,12 @@ for fname in files:
         pairlines2 += b + "\t"
         pairlines3 += v + "\t"
 
+    # uncomment pairlines1,2 and 4 when pasting to official flagged submission google sheets
     with open("pairs_out.txt", "a") as out:
-        out.write(pairlines1 + "\n")
-        out.write(pairlines2 + "\n")
+        # out.write(pairlines1 + "\n")
+        # out.write(pairlines2 + "\n")
         out.write(pairlines3 + "\n")
+        # out.write("\n")
 
 table1 = []
 

@@ -66,6 +66,16 @@ Example:
 ./bin/exec student_data.csv submissions/
 ```
 
+Then run 
+
+```bash
+python3 Frequency_Analysis.py
+```
+
+→ This creates a `pairs_out.txt` file that can easily be pasted into the Frequency Calc google sheets
+→ Change cell T1 to the column letter corresponding to each question. This will adjust the chart so one can see where to place the cutoffs
+→ There are lines to uncomment for the final paste, please read comment on line 37. This create change `pairs_out.txt` to something that can be better pasted into the final google sheets
+
 ---
 
 ## **Output Files**
@@ -74,7 +84,7 @@ Example:
 2. **`<question>_high_matches.txt`** – for each question:  
    - Pairs of students with high match scores  
    - Frequency of students being flagged  
-
+3. **`pairs_out.txt`** – used for easier pasting to help in data analysis
 ---
 
 ## **Configuration**
