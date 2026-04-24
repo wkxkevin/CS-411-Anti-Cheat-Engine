@@ -25,7 +25,7 @@ struct Row {
 const size_t ALPHA = 1; //match score
 const size_t BETA = 0; //mismatch score
 const size_t GAMMA = 0; //gap score
-const size_t NUM_THREADS = 4; //number of threads 
+const size_t NUM_THREADS = 4; //number of threads
 const double THRES_MULT = 3; //number of standard deviations above the average to place threshold
 
 size_t num_comp = 0; //global to keep track of number computed
@@ -65,7 +65,7 @@ size_t match_score(char* str1, size_t str1_len, char* str2, size_t str2_len) {
 			size_t mm_gap = prev_line[j - 1] + (str2[i-1] == str1[j - 1] ? ALPHA : BETA);
 			size_t temp = mm_gap > h_gap ? mm_gap : h_gap;
 			curr_line[j] = temp > v_gap ? temp : v_gap;
-		}	
+		}
 		size_t* tmp = prev_line;
         prev_line = curr_line;
         curr_line = tmp;
@@ -114,22 +114,19 @@ int main(int argc, char* argv[]) {
 	CSVReader reader(argv[1]);
 
     vector<string> questions = {
-    	/* fill with questions needed */ 
-    	"SP26-HW1/sp26-hw1-sql-q1",
-        "SP26-HW1/sp26-hw1-sql-q2",
-        "SP26-HW1/sp26-hw1-sql-q3",
-        "SP26-HW1/sp26-hw1-sql-q4",
-        "SP26-HW1/sp26-hw1-sql-q5",
-        "SP26-HW1/sp26-hw1-sql-q6",
-        "SP26-HW1/sp26-hw1-sql-q7",
-        "SP26-HW1/sp26-hw1-sql-q8",
-        "SP26-HW1/sp26-hw1-sql-q9",
-        "SP26-HW1/sp26-hw1-sql-q10",
-        "SP26-HW1/sp26-hw1-sql-q11",
-        "SP26-HW1/sp26-hw1-sql-q12",
-        "SP26-HW1/sp26-hw1-sql-q13",
-        "SP26-HW1/sp26-hw1-sql-q14",
-        "SP26-HW1/sp26-hw1-sql-q15"
+    	/* fill with questions needed */
+    	"SP26-HW4/mongodb-q1",
+        "SP26-HW4/mongodb-q2",
+        "SP26-HW4/mongodb-q3",
+        "SP26-HW4/mongodb-q4",
+        "SP26-HW4/mongodb-q5",
+        "SP26-HW4/mongodb-q6",
+        "SP26-HW4/neo4j-q7",
+        "SP26-HW4/neo4j-q8",
+        "SP26-HW4/neo4j-q9",
+        "SP26-HW4/neo4j-q10",
+        "SP26-HW4/neo4j-q11",
+        "SP26-HW4/neo4j-q12"
     };
 
     //map questions to its indices
@@ -212,7 +209,7 @@ int main(int argc, char* argv[]) {
     begin = end;
 
 //Section 2: Run an alignment program that finds students with high matching scores
-    
+
     //Folder of best files needs to be extracted and plugged into exec function
     string path = "./" + string(argv[2]) + "/";
     if(!fs::exists(path)) {
@@ -231,7 +228,6 @@ int main(int argc, char* argv[]) {
         }
     }
 
-    cout << "[LOG] Num " << student_dir_list.size() << endl;
     //Everything is sorted so students' netIDs match
     sort(net_id_list.begin(), net_id_list.end(), [](string a, string b) {
         return a < b;
@@ -242,7 +238,6 @@ int main(int argc, char* argv[]) {
 
     //Range through each question, and perform tasks accordingly
     for(size_t ques_idx = 0; ques_idx < questions.size(); ques_idx++) {
-
         //Get list of directories(rewrite if schemas change)
     	vector<char*> curr_question_responses;
     	for(auto student : student_dir_list) {
@@ -252,14 +247,10 @@ int main(int argc, char* argv[]) {
                 size_t second = curr_path.find('_', first + 1);
                 size_t third = curr_path.find('_', second + 1);
                 if (first == string::npos || second == string::npos || third == string::npos) {
-                    continue;   
+                    continue;
                 }
                 // Name of question goes across a '/' character but between 2nd and 3rd '_' character of full directory
                 string q = curr_path.substr(second + 1, third - second - 1);
-                if(!flag) {
-                    cout << "[LOG] Path: " << curr_path << endl;
-                    cout << "[LOG] Question: " << q << endl;
-                }
                 if(questions[ques_idx] == q) {
                     size_t size = 0;
                     ifstream file(curr_path, std::ios::binary | std::ios::ate);
@@ -279,9 +270,10 @@ int main(int argc, char* argv[]) {
 
         size_t len = curr_question_responses.size();
         vector<vector<size_t>> curr_question_match_scores(len, vector<size_t>(len, 0)); // match score table
-        
+
         if(len < 2) {
-            return -1;
+            cout << "[LOG] " << "Length of Question" << questions[ques_idx] << " Too Short:" << len << endl;;
+            continue;
         }
 
         size_t match_score_mean = 0;
@@ -368,7 +360,7 @@ int main(int argc, char* argv[]) {
         sort(score_vec.begin(), score_vec.end(), [](auto &a, auto &b) {
             return a.second > b.second;
         });
-        
+
         string qname = questions[ques_idx];
         size_t pos = qname.find_last_of('/');
         std::string safe_name;

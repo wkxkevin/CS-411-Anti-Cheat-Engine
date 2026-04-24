@@ -53,12 +53,12 @@ make clean
 ## **Usage**
 
 ```bash
-./bin/exec <instance_questions_file.csv> <student_submissions_folder>
+./bin/exec <instance_questions_file.csv> <student_submissions_folder> | tee log.txt
 ```
 
-- `<instance_questions_file.csv>` → CSV containing student question data.  
-- `<student_submissions_folder>` → folder containing student submission directories.
-Note: Ensure compressed file is unzipped
+- `<instance_questions_file.csv>` → CSV containing student question data, should be file ending in `instance_questions.csv`
+- `<student_submissions_folder>` → folder containing student submission directories, should be folder extracted ending in `best_files.zip`
+Note: Ensure compressed file is unzipped and to `make clean` between uses 
 
 Example:
 
@@ -86,7 +86,7 @@ const size_t ALPHA = 1;  // match score
 const size_t BETA = 0;   // mismatch score
 const size_t GAMMA = 0;  // gap score
 const size_t NUM_THREADS = 4; // number of threads
-const double THRES_MULT = 3;  // standard deviation multiplier for threshold
+const double THRES_MULT = 3;  // number of standard deviations above the norm for threshold
 ```
 
 - Modify these values to tune sensitivity for detecting high match scores or suspicious times.
