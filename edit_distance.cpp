@@ -232,6 +232,7 @@ int main(int argc, char *argv[]) {
   for (size_t ques_idx = 0; ques_idx < questions.size(); ques_idx++) {
     // Get list of directories(rewrite if schemas change)
     vector<char *> curr_question_responses;
+    vector<string> curr_question_net_ids;
     for (auto student : student_dir_list) {
       for (const auto &entry : fs::directory_iterator(student)) {
         string curr_path = entry.path().string();
@@ -259,6 +260,9 @@ int main(int argc, char *argv[]) {
           file.read(buffer, size);
           buffer[size] = '\0';
           curr_question_responses.push_back(buffer);
+
+          string student_name = fs::path(student).filename().string();
+          curr_question_net_ids.push_back(student_name.substr(0, student_name.find('@')));
         }
       }
     }
@@ -342,9 +346,9 @@ int main(int argc, char *argv[]) {
       for (size_t j = i + 1; j < len; j++) {
         size_t score = curr_question_match_scores[i][j];
         if (score >= threshold) {
-          score_map[(net_id_list[i] + "-" + net_id_list[j])] = score;
-          net_id_freq_map[net_id_list[i]]++;
-          net_id_freq_map[net_id_list[j]]++;
+            score_map[(curr_question_net_ids[i] + "-" + curr_question_net_ids[j])] = score;
+            net_id_freq_map[curr_question_net_ids[i]]++;
+            net_id_freq_map[curr_question_net_ids[j]]++;;
         }
       }
     }
