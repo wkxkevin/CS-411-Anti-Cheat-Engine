@@ -118,14 +118,7 @@ int main(int argc, char *argv[]) {
 
   vector<string> questions = {
       /* fill with questions needed */
-      "SP25-HW1/sp25-hw1-sql-q1",  "FA25-HW1/fa25-hw1-sql-q2",
-      "SP25-HW1/sp25-hw1-sql-q3",  "SP25-HW1/sp25-hw1-sql-q4",
-      "FA25-HW1/fa25-hw1-sql-q5",  "FA25-HW1/fa25-hw1-sql-q6",
-      "SP25-HW1/sp25-hw1-sql-q7",  "FA25-HW1/fa25-hw1-sql-q8",
-      "SP25-HW1/sp25-hw1-sql-q9",  "FA25-HW1/fa25-hw1-sql-q10",
-      "SP25-HW1/sp25-hw1-sql-q11", "FA25-HW1/fa25-hw1-sql-q12",
-      "FA25-HW1/fa25-hw1-sql-q13", "SP25-HW1/sp25-hw1-sql-q14",
-      "SP25-HW1/sp25-hw1-sql-q15"};
+      "sp22-cbtf1-sql1-v1", "sp22-cbtf1-sql1-v2", "sp22-cbtf1-sql1-v3", "sp22-cbtf1-sql1-v4", "sp22-cbtf1-sql1-v5", "fa21-cbtf1-sql1-v1", "fa21-cbtf1-sql1-v2", "fa21-cbtf1-sql1-v3", "fa21-cbtf1-sql1-v4", "fa21-cbtf1-sql1-v5", "fa21-cbtf1-sql1-v6", "fa21-cbtf1-sql1-v7", "fa21-cbtf1-sql1-v8", "fa21-cbtf1-sql1-v9", "sp22-cbtf1-sql2-v1", "sp22-cbtf1-sql2-v2", "sp22-cbtf1-sql2-v3", "sp22-cbtf1-sql2-v4", "sp22-cbtf1-sql2-v5"};
 
   // map questions to its indices
   unordered_map<string, size_t> question_order;
