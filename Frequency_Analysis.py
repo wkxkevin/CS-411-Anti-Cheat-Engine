@@ -1,18 +1,21 @@
 from itertools import zip_longest
 
 files = [
-    "mongodb-q1_high_matches.txt",
-    "mongodb-q2_high_matches.txt",
-    "mongodb-q3_high_matches.txt",
-    "mongodb-q4_high_matches.txt",
-    "mongodb-q5_high_matches.txt",
-    "mongodb-q6_high_matches.txt",
-    "neo4j-q7_high_matches.txt",
-    "neo4j-q8_high_matches.txt",
-    "neo4j-q9_high_matches.txt",
-    "neo4j-q10_high_matches.txt",
-    "neo4j-q11_high_matches.txt",
-    "neo4j-q12_high_matches.txt",
+    "sp25-hw1-sql-q1",
+    "fa25-hw1-sql-q2",
+    "sp25-hw1-sql-q3",
+    "sp25-hw1-sql-q4",
+    "fa25-hw1-sql-q5",
+    "fa25-hw1-sql-q6",
+    "sp25-hw1-sql-q7",
+    "fa25-hw1-sql-q8",
+    "sp25-hw1-sql-q9",
+    "fa25-hw1-sql-q10",
+    "sp25-hw1-sql-q11",
+    "fa25-hw1-sql-q12",
+    "fa25-hw1-sql-q13",
+    "sp25-hw1-sql-q14",
+    "sp25-hw1-sql-q15",
 ]
 
 open("pairs_out.txt", "w").close()
@@ -21,7 +24,7 @@ for fname in files:
     pairlines2 = ""
     pairlines3 = ""
 
-    with open(fname) as f:
+    with open(fname + "_high_matches.txt") as f:
         lines = [line.strip() for line in f if line.strip()]
 
     i = lines.index("Flagged Response Pairs") + 1
@@ -36,8 +39,8 @@ for fname in files:
 
     # uncomment pairlines1,2 and 4 when pasting to official flagged submission google sheets
     with open("pairs_out.txt", "a") as out:
-        # out.write(pairlines1 + "\n")
-        # out.write(pairlines2 + "\n")
+        out.write(pairlines1 + "\n")
+        out.write(pairlines2 + "\n")
         out.write(pairlines3 + "\n")
         # out.write("\n")
 
