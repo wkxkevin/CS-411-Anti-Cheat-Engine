@@ -78,7 +78,9 @@ size_t match_score(char *str1, size_t str1_len, char *str2, size_t str2_len) {
   delete[] prev_line;
   delete[] curr_line;
 
-  return dist;
+  double normalized =
+      (double)dist / (double)(ALPHA * (long long)std::max(str1_len, str2_len));
+  return (size_t)(normalized * 100);
 }
 
 // Thread function that gets match score table
@@ -116,9 +118,16 @@ int main(int argc, char *argv[]) {
   // Section 1: Read student questions times and find suspicious ones
   CSVReader reader(argv[1]);
 
-  vector<string> questions = {
-      /* fill with questions needed */
-      "sp22-cbtf1-sql1-v1", "sp22-cbtf1-sql1-v2", "sp22-cbtf1-sql1-v3", "sp22-cbtf1-sql1-v4", "sp22-cbtf1-sql1-v5", "fa21-cbtf1-sql1-v1", "fa21-cbtf1-sql1-v2", "fa21-cbtf1-sql1-v3", "fa21-cbtf1-sql1-v4", "fa21-cbtf1-sql1-v5", "fa21-cbtf1-sql1-v6", "fa21-cbtf1-sql1-v7", "fa21-cbtf1-sql1-v8", "fa21-cbtf1-sql1-v9", "sp22-cbtf1-sql2-v1", "sp22-cbtf1-sql2-v2", "sp22-cbtf1-sql2-v3", "sp22-cbtf1-sql2-v4", "sp22-cbtf1-sql2-v5"};
+  vector<string> questions = {/* fill with questions needed */
+                              "sp26-hw3/sp26-hw3-q4-ra-v1",
+                              "sp26-hw3/sp26-hw3-q4-ra-v2",
+                              "sp26-hw3/sp26-hw3-q4-ra-v3",
+                              "sp26-hw3/sp26-hw3-q4-ra-v4",
+                              "sp26-hw3/sp26-hw3-q5-ra-v1",
+                              "sp26-hw3/sp26-hw3-q5-ra-v2",
+                              "sp26-hw3/sp26-hw3-q5-ra-v3",
+                              "sp25-hw3-q6-block-based-join",
+                              "fa25-hw3/fa25-hw3-q6-block-based-join-v2"};
 
   // map questions to its indices
   unordered_map<string, size_t> question_order;
@@ -262,7 +271,8 @@ int main(int argc, char *argv[]) {
           curr_question_responses.push_back(buffer);
 
           string student_name = fs::path(student).filename().string();
-          curr_question_net_ids.push_back(student_name.substr(0, student_name.find('@')));
+          curr_question_net_ids.push_back(
+              student_name.substr(0, student_name.find('@')));
         }
       }
     }
@@ -346,9 +356,11 @@ int main(int argc, char *argv[]) {
       for (size_t j = i + 1; j < len; j++) {
         size_t score = curr_question_match_scores[i][j];
         if (score >= threshold) {
-            score_map[(curr_question_net_ids[i] + "-" + curr_question_net_ids[j])] = score;
-            net_id_freq_map[curr_question_net_ids[i]]++;
-            net_id_freq_map[curr_question_net_ids[j]]++;;
+          score_map[(curr_question_net_ids[i] + "-" +
+                     curr_question_net_ids[j])] = score;
+          net_id_freq_map[curr_question_net_ids[i]]++;
+          net_id_freq_map[curr_question_net_ids[j]]++;
+          ;
         }
       }
     }

@@ -22,3 +22,5 @@ $(TESTS): $(SRC)
 
 clean:
 	rm -rf bin/*
+	rm -rf *high_matches.txt
+	rm -rf weird_times.txt
