@@ -9,6 +9,7 @@
 #include <pthread.h>
 #include <stdio.h>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace fs = std::filesystem;
@@ -80,7 +81,7 @@ size_t match_score(char *str1, size_t str1_len, char *str2, size_t str2_len) {
 
   double normalized =
       (double)dist / (double)(ALPHA * (long long)std::max(str1_len, str2_len));
-  return (size_t)(normalized * 100);
+  return (size_t)(normalized * 100 + 0.5);
 }
 
 // Thread function that gets match score table
@@ -118,16 +119,16 @@ int main(int argc, char *argv[]) {
   // Section 1: Read student questions times and find suspicious ones
   CSVReader reader(argv[1]);
 
-  vector<string> questions = {/* fill with questions needed */
-                              "sp26-hw3/sp26-hw3-q4-ra-v1",
-                              "sp26-hw3/sp26-hw3-q4-ra-v2",
-                              "sp26-hw3/sp26-hw3-q4-ra-v3",
-                              "sp26-hw3/sp26-hw3-q4-ra-v4",
-                              "sp26-hw3/sp26-hw3-q5-ra-v1",
-                              "sp26-hw3/sp26-hw3-q5-ra-v2",
-                              "sp26-hw3/sp26-hw3-q5-ra-v3",
-                              "sp25-hw3-q6-block-based-join",
-                              "fa25-hw3/fa25-hw3-q6-block-based-join-v2"};
+  vector<string> questions = {
+      /* fill with questions needed */
+      "FA26-HW1/fa26-hw1-sql-q1",  "FA26-HW1/fa26-hw1-sql-q2",
+      "FA26-HW1/fa26-hw1-sql-q3",  "FA26-HW1/fa26-hw1-sql-q4",
+      "FA26-HW1/fa26-hw1-sql-q5",  "FA26-HW1/fa26-hw1-sql-q6",
+      "FA26-HW1/fa26-hw1-sql-q7",  "FA26-HW1/fa26-hw1-sql-q8",
+      "FA26-HW1/fa26-hw1-sql-q9",  "FA26-HW1/fa26-hw1-sql-q10",
+      "FA26-HW1/fa26-hw1-sql-q11", "FA26-HW1/fa26-hw1-sql-q12",
+      "FA26-HW1/fa26-hw1-sql-q13", "FA26-HW1/fa26-hw1-sql-q14",
+      "FA26-HW1/fa26-hw1-sql-q15"};
 
   // map questions to its indices
   unordered_map<string, size_t> question_order;
@@ -237,43 +238,70 @@ int main(int argc, char *argv[]) {
   sort(student_dir_list.begin(), student_dir_list.end(),
        [](string a, string b) { return a < b; });
 
+  // Every response file, whether it's inside a folder or directly in `path`
+  vector<string> response_files;
+  for (const auto &entry : fs::directory_iterator(path)) {
+    if (fs::is_directory(entry.path())) {
+      for (const auto &inner : fs::directory_iterator(entry.path()))
+        response_files.push_back(inner.path().string());
+    } else {
+      response_files.push_back(entry.path().string());
+    }
+  }
+  sort(response_files.begin(), response_files.end());
+
   // Range through each question, and perform tasks accordingly
   for (size_t ques_idx = 0; ques_idx < questions.size(); ques_idx++) {
     // Get list of directories(rewrite if schemas change)
     vector<char *> curr_question_responses;
     vector<string> curr_question_net_ids;
-    for (auto student : student_dir_list) {
-      for (const auto &entry : fs::directory_iterator(student)) {
-        string curr_path = entry.path().string();
-        size_t first = curr_path.find('_');
-        size_t second = curr_path.find('_', first + 1);
-        size_t third = curr_path.find('_', second + 1);
-        if (first == string::npos || second == string::npos ||
-            third == string::npos) {
+    unordered_set<string> seen_net_ids;
+    for (const auto &curr_path : response_files) {
+      // string curr_path = entry.path().string();
+      size_t first = curr_path.find('_');
+      size_t second =
+          curr_path.find("_", first + 1); // change inside to ("_1_") if
+                                          // checking bonus homework questions
+      size_t third =
+          curr_path.find("_",
+                         second + 1); // change inside to ("_1_", second + 1) if
+                                      // checking bonus homework questions
+      if (first == string::npos || second == string::npos ||
+          third == string::npos) {
+        continue;
+      }
+      // Name of question goes across a '/' character but between 2nd and 3rd
+      // '_' character of full directory
+      string q = curr_path.substr(
+          second + 1,
+          third - second -
+              1); // change the 1s to 3s if checking bonus homework questions
+      // cout << q << endl;
+      if (questions[ques_idx] == q) {
+        string top = curr_path.substr(path.size());
+        top = top.substr(0, top.find('/'));
+        string net_id = top.substr(0, top.find('@'));
+        if (!seen_net_ids.insert(net_id).second) {
+          // cout << "[DEBUG] duplicate " << net_id << ": " << curr_path <<
+          // endl; // remove later
           continue;
         }
-        // Name of question goes across a '/' character but between 2nd and 3rd
-        // '_' character of full directory
-        string q = curr_path.substr(second + 1, third - second - 1);
-        if (questions[ques_idx] == q) {
-          size_t size = 0;
-          ifstream file(curr_path, std::ios::binary | std::ios::ate);
-          if (!file) {
-            cerr << "[ERROR] Could Not Read Reponse File of Student: "
-                 << curr_path.substr(curr_path.find('/', 2), first) << endl;
-            return -1;
-          }
-          size = static_cast<size_t>(file.tellg());
-          file.seekg(0);
-          char *buffer = new char[size + 1];
-          file.read(buffer, size);
-          buffer[size] = '\0';
-          curr_question_responses.push_back(buffer);
-
-          string student_name = fs::path(student).filename().string();
-          curr_question_net_ids.push_back(
-              student_name.substr(0, student_name.find('@')));
+        size_t size = 0;
+        ifstream file(curr_path, std::ios::binary | std::ios::ate);
+        if (!file) {
+          cerr << "[ERROR] Could Not Read Reponse File of Student: "
+               << curr_path << endl;
+          return -1;
         }
+        size = static_cast<size_t>(file.tellg());
+        file.seekg(0);
+        char *buffer = new char[size + 1];
+        file.read(buffer, size);
+        buffer[size] = '\0';
+
+        curr_question_responses.push_back(buffer);
+
+        curr_question_net_ids.push_back(top.substr(0, top.find('@')));
       }
     }
 
@@ -347,7 +375,7 @@ int main(int argc, char *argv[]) {
     cout << "Max: " << max_score << endl;
 
     size_t threshold = match_score_mean + (size_t)(THRES_MULT * floor_stdev);
-
+    threshold = threshold > 90 ? threshold : 90;
     // Go through all scores and compute highest matching student pairs and
     // record how often a student's answer was flagged
     unordered_map<string, size_t> net_id_freq_map;

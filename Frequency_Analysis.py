@@ -1,21 +1,13 @@
 from itertools import zip_longest
 
 files = [
-    "sp25-hw1-sql-q1",
-    "fa25-hw1-sql-q2",
-    "sp25-hw1-sql-q3",
-    "sp25-hw1-sql-q4",
-    "fa25-hw1-sql-q5",
-    "fa25-hw1-sql-q6",
-    "sp25-hw1-sql-q7",
-    "fa25-hw1-sql-q8",
-    "sp25-hw1-sql-q9",
-    "fa25-hw1-sql-q10",
-    "sp25-hw1-sql-q11",
-    "fa25-hw1-sql-q12",
-    "fa25-hw1-sql-q13",
-    "sp25-hw1-sql-q14",
-    "sp25-hw1-sql-q15",
+    "fa26-hw3-q4-ra-v2",
+    "fa26-hw3-q4-ra-v3",
+    "fa26-hw3-q5-ra-v1",
+    "fa26-hw3-q5-ra-v2",
+    "fa26-hw3-q5-ra-v3",
+    "sp25-hw3-q6-block-based-join",
+    "fa25-hw3-q6-block-based-join-v2",
 ]
 
 open("pairs_out.txt", "w").close()
